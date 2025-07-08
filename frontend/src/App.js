@@ -103,18 +103,38 @@ const App = () => {
       });
 
       if (response.ok) {
+        // Get the filename from the response headers
+        const contentDisposition = response.headers.get('content-disposition');
+        let filename = 'video.mp4';
+        
+        if (contentDisposition) {
+          const matches = contentDisposition.match(/filename\*?=['"]?([^'";]+)['"]?/);
+          if (matches) {
+            filename = decodeURIComponent(matches[1]);
+          }
+        }
+
         const blob = await response.blob();
+        
+        // Create download link
         const downloadUrl = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = downloadUrl;
-        a.download = `${videoInfo?.title || 'video'}.mp4`;
+        a.download = filename;
+        a.style.display = 'none';
         document.body.appendChild(a);
         a.click();
+        
+        // Cleanup
         document.body.removeChild(a);
         window.URL.revokeObjectURL(downloadUrl);
 
         // Refresh recent downloads
         fetchRecentDownloads();
+        
+        // Show success message
+        setError('');
+        
       } else {
         const errorData = await response.json();
         setError(errorData.detail || 'Failed to download video');
