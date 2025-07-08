@@ -167,6 +167,8 @@ async def download_video(request: URLRequest):
             'format': 'best[height<=720]',  # Download best quality up to 720p
             'quiet': True,
             'no_warnings': True,
+            'socket_timeout': 30,
+            'retries': 3,
         }
         
         # Download video
