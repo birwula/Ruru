@@ -167,7 +167,7 @@ async def extract_video_info(request: URLRequest):
                 'platform': platform,
                 'thumbnail': info.get('thumbnail', ''),
                 'duration': str(info.get('duration', 0)),
-                'formats': formats[:5],  # Top 5 formats
+                'formats': unique_formats,  # Top 10 unique formats
                 'status': 'ready'
             }
             
