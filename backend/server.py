@@ -107,16 +107,58 @@ async def extract_video_info(request: URLRequest):
             if 'formats' in info:
                 for fmt in info['formats']:
                     if fmt.get('vcodec') != 'none':  # Only video formats
-                        formats.append({
+                        format_info = {
                             'format_id': fmt.get('format_id'),
                             'ext': fmt.get('ext'),
-                            'quality': fmt.get('quality', 'Unknown'),
+                            'resolution': fmt.get('resolution', 'Unknown'),
+                            'height': fmt.get('height'),
+                            'width': fmt.get('width'),
+                            'fps': fmt.get('fps'),
                             'filesize': fmt.get('filesize'),
-                            'url': fmt.get('url')
-                        })
+                            'filesize_approx': fmt.get('filesize_approx'),
+                            'tbr': fmt.get('tbr'),  # Total bitrate
+                            'vbr': fmt.get('vbr'),  # Video bitrate
+                            'abr': fmt.get('abr'),  # Audio bitrate
+                            'acodec': fmt.get('acodec'),
+                            'vcodec': fmt.get('vcodec'),
+                            'format_note': fmt.get('format_note', ''),
+                            'quality': fmt.get('quality', 0)
+                        }
+                        
+                        # Create a readable quality description
+                        quality_desc = []
+                        if format_info['height']:
+                            quality_desc.append(f"{format_info['height']}p")
+                        if format_info['fps']:
+                            quality_desc.append(f"{format_info['fps']}fps")
+                        if format_info['ext']:
+                            quality_desc.append(format_info['ext'].upper())
+                        
+                        format_info['quality_desc'] = ' • '.join(quality_desc) if quality_desc else 'Unknown'
+                        
+                        # Calculate approximate file size in MB
+                        if format_info['filesize']:
+                            format_info['size_mb'] = round(format_info['filesize'] / (1024 * 1024), 1)
+                        elif format_info['filesize_approx']:
+                            format_info['size_mb'] = round(format_info['filesize_approx'] / (1024 * 1024), 1)
+                        else:
+                            format_info['size_mb'] = None
+                        
+                        formats.append(format_info)
             
-            # Sort formats by quality (highest first)
-            formats.sort(key=lambda x: x.get('quality', 0), reverse=True)
+            # Sort formats by height (resolution) descending, then by quality
+            formats.sort(key=lambda x: (x.get('height', 0), x.get('quality', 0)), reverse=True)
+            
+            # Remove duplicates and limit to top 10 formats
+            seen_resolutions = set()
+            unique_formats = []
+            for fmt in formats:
+                resolution_key = (fmt.get('height'), fmt.get('ext'))
+                if resolution_key not in seen_resolutions:
+                    seen_resolutions.add(resolution_key)
+                    unique_formats.append(fmt)
+                    if len(unique_formats) >= 10:
+                        break
             
             response_data = {
                 'id': download_id,
