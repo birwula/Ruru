@@ -91,6 +91,8 @@ async def extract_video_info(request: URLRequest):
             'extract_flat': False,
             'writesubtitles': False,
             'writeautomaticsub': False,
+            'socket_timeout': 30,
+            'retries': 3,
         }
         
         # Extract video info
