@@ -205,11 +205,13 @@ const App = () => {
             <div className="flex flex-col md:flex-row gap-6">
               {/* Thumbnail */}
               <div className="md:w-1/3">
-                <img 
-                  src={videoInfo.thumbnail} 
-                  alt={videoInfo.title}
-                  className="w-full rounded-lg shadow-lg"
-                />
+                {videoInfo.thumbnail && (
+                  <img 
+                    src={videoInfo.thumbnail} 
+                    alt={videoInfo.title}
+                    className="w-full rounded-lg shadow-lg"
+                  />
+                )}
               </div>
               
               {/* Video Details */}
