@@ -179,3 +179,5 @@
 ## agent_communication:
     - agent: "main"
     - message: "Implemented format selection feature. Backend now accepts format_id parameter and validates formats. Frontend shows format selection UI with quality descriptions and file sizes. Need to test the complete flow from format selection to download."
+    - agent: "testing"
+    - message: "Completed backend testing for format selection functionality. All tests are passing. The /api/extract-info endpoint correctly returns video information with available formats. The /api/download endpoint works with both default format and specific format_id. Format validation is working, though it returns 500 errors instead of 400 for invalid formats. Created comprehensive tests in backend_test.py."
