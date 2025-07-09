@@ -151,11 +151,43 @@ class SocialMediaVideoDownloaderAPITester:
             print("❌ No valid format_id available for testing")
             self.tests_run += 1  # Count as run but not passed
             return False
+        
+        # First, get available formats from extract-info
+        print("Getting available formats from extract-info endpoint...")
+        _, info_response = self.run_test(
+            "Get Available Formats",
+            "POST",
+            "api/extract-info",
+            200,
+            data={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
+        )
+        
+        # Find a suitable format (preferably mp4 with reasonable resolution)
+        formats = info_response.get('formats', [])
+        test_format = None
+        
+        for fmt in formats:
+            # Look for a medium quality mp4 format (around 360p-720p)
+            if fmt.get('ext') == 'mp4' and fmt.get('height', 0) >= 360 and fmt.get('height', 0) <= 720:
+                test_format = fmt.get('format_id')
+                break
+        
+        # If no suitable mp4 format found, try any format with reasonable resolution
+        if not test_format:
+            for fmt in formats:
+                if fmt.get('height', 0) >= 360 and fmt.get('height', 0) <= 720:
+                    test_format = fmt.get('format_id')
+                    break
+        
+        # If still no format found, use the first available format
+        if not test_format and formats:
+            test_format = formats[0].get('format_id')
+        
+        # If no format available, use a common format as fallback
+        if not test_format:
+            test_format = "18"  # 360p mp4, commonly available
             
-        # For testing purposes, we'll use a common format that's likely to exist
-        # This is more reliable than using the format_id from extract-info
-        test_format = "22"  # 720p MP4 format commonly available on YouTube
-        print(f"Using common format_id '{test_format}' instead of '{self.test_format_id}' for reliable testing")
+        print(f"Using format_id '{test_format}' for download test")
             
         success, _ = self.run_test(
             "Download Video with Specific Format",
