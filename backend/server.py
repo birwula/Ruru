@@ -227,23 +227,46 @@ async def download_video(request: DownloadRequest):
         
         # Download video
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            # First extract info to validate format if specified
+            if request.format_id:
+                info = ydl.extract_info(url, download=False)
+                
+                # Check if the requested format exists
+                available_formats = [fmt.get('format_id') for fmt in info.get('formats', [])]
+                if request.format_id not in available_formats:
+                    raise HTTPException(status_code=400, detail=f"Format '{request.format_id}' not available. Available formats: {', '.join(available_formats[:10])}")
+            
+            # Now download the video
             info = ydl.extract_info(url, download=True)
             
             # Find the downloaded file
             downloaded_file = None
             for file in os.listdir(temp_dir):
-                if file.endswith(('.mp4', '.webm', '.mkv', '.avi')):
+                if file.endswith(('.mp4', '.webm', '.mkv', '.avi', '.flv', '.3gp', '.m4a')):
                     downloaded_file = os.path.join(temp_dir, file)
                     break
             
             if not downloaded_file:
                 raise HTTPException(status_code=500, detail="Failed to download video")
             
-            # Return file response
+            # Get the actual file extension
+            file_extension = os.path.splitext(downloaded_file)[1][1:]  # Remove the dot
+            
+            # Return file response with correct media type
+            media_type = 'video/mp4'
+            if file_extension in ['webm']:
+                media_type = 'video/webm'
+            elif file_extension in ['mkv']:
+                media_type = 'video/x-matroska'
+            elif file_extension in ['avi']:
+                media_type = 'video/x-msvideo'
+            elif file_extension in ['m4a']:
+                media_type = 'audio/mp4'
+            
             return FileResponse(
                 downloaded_file,
-                media_type='video/mp4',
-                filename=f"{info.get('title', 'video')}.mp4"
+                media_type=media_type,
+                filename=f"{info.get('title', 'video')}.{file_extension}"
             )
             
     except Exception as e:
