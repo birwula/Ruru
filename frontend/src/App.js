@@ -260,10 +260,58 @@ const App = () => {
                   <span>⏱️ {formatDuration(parseInt(videoInfo.duration))}</span>
                   <span>📹 {videoInfo.formats.length} formats available</span>
                 </div>
+
+                {/* Format Selection */}
+                <div className="mb-6">
+                  <label className="block text-white font-semibold mb-3">
+                    🎬 Choose Quality & Format:
+                  </label>
+                  <div className="grid gap-2 max-h-64 overflow-y-auto">
+                    {videoInfo.formats.map((format) => (
+                      <label 
+                        key={format.format_id} 
+                        className={`flex items-center p-3 rounded-lg border-2 cursor-pointer transition-all duration-200 ${
+                          selectedFormat === format.format_id
+                            ? 'border-blue-500 bg-blue-500/20 text-blue-300'
+                            : 'border-gray-600 bg-gray-700/30 text-gray-300 hover:border-gray-500'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="format"
+                          value={format.format_id}
+                          checked={selectedFormat === format.format_id}
+                          onChange={(e) => setSelectedFormat(e.target.value)}
+                          className="sr-only"
+                        />
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-lg">{format.quality_desc}</span>
+                              {format.size_mb && (
+                                <span className="text-sm text-gray-400">
+                                  ({format.size_mb} MB)
+                                </span>
+                              )}
+                            </div>
+                            <div className="text-sm text-gray-400">
+                              {format.ext?.toUpperCase()}
+                            </div>
+                          </div>
+                          {format.format_note && (
+                            <div className="text-xs text-gray-500 mt-1">
+                              {format.format_note}
+                            </div>
+                          )}
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
                 
                 <button
                   onClick={handleDownload}
-                  disabled={downloading}
+                  disabled={downloading || !selectedFormat}
                   className="w-full md:w-auto px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-600 text-white rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center justify-center gap-2"
                 >
                   {downloading ? (
