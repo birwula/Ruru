@@ -34,6 +34,10 @@ downloads_collection = db.downloads
 class URLRequest(BaseModel):
     url: str
 
+class DownloadRequest(BaseModel):
+    url: str
+    format_id: str = None  # Optional: if not provided, use best quality
+
 class DownloadResponse(BaseModel):
     id: str
     url: str
