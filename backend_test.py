@@ -195,8 +195,8 @@ def main():
         print("❌ Health check failed, stopping tests")
         return 1
     
-    # Test extract info with YouTube URL
-    youtube_info_success, youtube_info = tester.test_extract_info_youtube()
+    # Test extract info with YouTube URL and check formats
+    youtube_info_success, youtube_info = tester.test_extract_info_formats()
     
     # Test invalid URL
     tester.test_extract_info_invalid_url()
@@ -204,9 +204,16 @@ def main():
     # Test Facebook URL
     tester.test_extract_info_facebook()
     
-    # Test download endpoint
+    # Test download endpoints with format options
     if youtube_info_success:
-        tester.test_download_endpoint()
+        # Test default format download
+        tester.test_download_default_format()
+        
+        # Test download with valid format
+        tester.test_download_with_valid_format()
+        
+        # Test download with invalid format
+        tester.test_download_with_invalid_format()
     
     # Test recent downloads
     tester.test_get_downloads()
