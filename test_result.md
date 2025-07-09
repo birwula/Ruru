@@ -101,3 +101,75 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+## user_problem_statement: "Add options for user to choose resolution and filetype in the Social Media Video Downloader app"
+
+## backend:
+  - task: "Add format selection to download endpoint"
+    implemented: true
+    working: false  # needs testing
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+        - agent: "main"
+        - comment: "Added DownloadRequest model with format_id parameter, updated download endpoint to accept format selection, added format validation"
+
+  - task: "Add format validation and error handling"
+    implemented: true
+    working: false  # needs testing
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+        - agent: "main"
+        - comment: "Added validation to check if requested format exists, improved error messages, added support for multiple file extensions"
+
+## frontend:
+  - task: "Add format selection UI"
+    implemented: true
+    working: false  # needs testing
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+        - agent: "main"
+        - comment: "Added selectedFormat state, format selection UI with radio buttons, updated download function to send format_id"
+
+  - task: "Update download function to handle format selection"
+    implemented: true
+    working: false  # needs testing
+    file: "/app/frontend/src/App.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: false
+        - agent: "main"
+        - comment: "Modified handleDownload to include selected format in request body, updated request structure"
+
+## metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: false
+
+## test_plan:
+  current_focus:
+    - "Add format selection to download endpoint"
+    - "Add format validation and error handling"
+    - "Add format selection UI"
+    - "Update download function to handle format selection"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+## agent_communication:
+    - agent: "main"
+    - message: "Implemented format selection feature. Backend now accepts format_id parameter and validates formats. Frontend shows format selection UI with quality descriptions and file sizes. Need to test the complete flow from format selection to download."
