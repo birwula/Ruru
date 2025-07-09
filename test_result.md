@@ -138,27 +138,33 @@
 ## frontend:
   - task: "Add format selection UI"
     implemented: true
-    working: false  # needs testing
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
         - agent: "main"
         - comment: "Added selectedFormat state, format selection UI with radio buttons, updated download function to send format_id"
+        - working: true
+        - agent: "testing"
+        - comment: "Format selection UI is working correctly. UI shows available formats with quality descriptions (e.g., 2160p, 1440p), file extensions (MP4, WEBM), and file sizes in MB. Radio buttons work properly for selection, and the selected format is highlighted with different styling. Default format is auto-selected when video info loads."
 
   - task: "Update download function to handle format selection"
     implemented: true
-    working: false  # needs testing
+    working: true
     file: "/app/frontend/src/App.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
         - agent: "main"
         - comment: "Modified handleDownload to include selected format in request body, updated request structure"
+        - working: true
+        - agent: "testing"
+        - comment: "Download function correctly includes the selected format_id in the request body. Verified that changing format selection and clicking download sends the correct format_id to the backend. Download process starts properly with 'Downloading...' state shown."
 
 ## metadata:
   created_by: "main_agent"
