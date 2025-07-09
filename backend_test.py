@@ -101,15 +101,69 @@ class SocialMediaVideoDownloaderAPITester:
         
         return success
 
-    def test_download_endpoint(self):
-        """Test the download endpoint with a YouTube URL"""
+    def test_extract_info_formats(self):
+        """Test that extract-info endpoint returns format information"""
+        success, response = self.run_test(
+            "Extract Video Info with Formats",
+            "POST",
+            "api/extract-info",
+            200,
+            data={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
+        )
+        
+        if success:
+            formats = response.get('formats', [])
+            print(f"Available formats: {len(formats)}")
+            if formats:
+                print("Format details:")
+                for i, fmt in enumerate(formats[:3]):  # Show first 3 formats
+                    print(f"  {i+1}. Format ID: {fmt.get('format_id')}, Quality: {fmt.get('quality_desc')}, Size: {fmt.get('size_mb')} MB")
+                # Save the first format_id for later tests
+                self.test_format_id = formats[0].get('format_id') if formats else None
+                print(f"Using format_id '{self.test_format_id}' for format tests")
+            else:
+                print("No formats returned in response")
+                self.test_format_id = None
+        
+        return success, response
+    
+    def test_download_default_format(self):
+        """Test the download endpoint with default format (no format_id)"""
         success, _ = self.run_test(
-            "Download Video",
+            "Download Video with Default Format",
             "POST",
             "api/download",
             200,  # We expect a 200 but won't actually download the file
             data={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"}
         )
+        return success
+        
+    def test_download_with_valid_format(self):
+        """Test the download endpoint with a valid format_id"""
+        if not hasattr(self, 'test_format_id') or not self.test_format_id:
+            print("❌ No valid format_id available for testing")
+            return False
+            
+        success, _ = self.run_test(
+            "Download Video with Specific Format",
+            "POST",
+            "api/download",
+            200,
+            data={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "format_id": self.test_format_id}
+        )
+        return success
+        
+    def test_download_with_invalid_format(self):
+        """Test the download endpoint with an invalid format_id"""
+        invalid_format = "invalid_format_id_12345"
+        success, _ = self.run_test(
+            "Download Video with Invalid Format",
+            "POST",
+            "api/download",
+            400,  # We expect a 400 error for invalid format
+            data={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "format_id": invalid_format}
+        )
+        # For this test, success means we got the expected 400 error
         return success
 
     def test_get_downloads(self):
