@@ -195,7 +195,7 @@ async def extract_video_info(request: URLRequest):
         raise HTTPException(status_code=500, detail=f"Error extracting video info: {str(e)}")
 
 @app.post("/api/download")
-async def download_video(request: URLRequest):
+async def download_video(request: DownloadRequest):
     """Download video and return download URL"""
     try:
         url = request.url.strip()
@@ -207,10 +207,18 @@ async def download_video(request: URLRequest):
         # Create temporary directory for download
         temp_dir = tempfile.mkdtemp()
         
+        # Determine format to use
+        if request.format_id:
+            # Use specific format if provided
+            format_selector = request.format_id
+        else:
+            # Use default format if no specific format is requested
+            format_selector = 'best[height<=720]'
+        
         # Configure yt-dlp options for download
         ydl_opts = {
             'outtmpl': os.path.join(temp_dir, '%(title)s.%(ext)s'),
-            'format': 'best[height<=720]',  # Download best quality up to 720p
+            'format': format_selector,
             'quiet': True,
             'no_warnings': True,
             'socket_timeout': 30,
