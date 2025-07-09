@@ -107,15 +107,18 @@
 ## backend:
   - task: "Add format selection to download endpoint"
     implemented: true
-    working: false  # needs testing
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
         - agent: "main"
         - comment: "Added DownloadRequest model with format_id parameter, updated download endpoint to accept format selection, added format validation"
+        - working: true
+        - agent: "testing"
+        - comment: "Tested the format selection functionality. The endpoint correctly accepts format_id parameter and downloads videos in the specified format. Default format works when no format_id is provided."
 
   - task: "Add format validation and error handling"
     implemented: true
