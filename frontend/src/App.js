@@ -61,6 +61,7 @@ const App = () => {
     setLoading(true);
     setError('');
     setVideoInfo(null);
+    setSelectedFormat(null);
 
     try {
       const response = await fetch(`${backendUrl}/api/extract-info`, {
@@ -74,6 +75,10 @@ const App = () => {
       if (response.ok) {
         const data = await response.json();
         setVideoInfo(data);
+        // Set default format to the first available format
+        if (data.formats && data.formats.length > 0) {
+          setSelectedFormat(data.formats[0].format_id);
+        }
       } else {
         const errorData = await response.json();
         setError(errorData.detail || 'Failed to extract video information');
