@@ -173,13 +173,9 @@
   run_ui: false
 
 ## test_plan:
-  current_focus:
-    - "Add format selection to download endpoint"
-    - "Add format validation and error handling"
-    - "Add format selection UI"
-    - "Update download function to handle format selection"
+  current_focus: []
   stuck_tasks: []
-  test_all: true
+  test_all: false
   test_priority: "high_first"
 
 ## agent_communication:
