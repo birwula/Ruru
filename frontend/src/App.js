@@ -8,6 +8,7 @@ const App = () => {
   const [error, setError] = useState('');
   const [downloading, setDownloading] = useState(false);
   const [recentDownloads, setRecentDownloads] = useState([]);
+  const [selectedFormat, setSelectedFormat] = useState(null);
 
   const backendUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8001';
 
