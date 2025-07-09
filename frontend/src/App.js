@@ -100,12 +100,17 @@ const App = () => {
     setError('');
 
     try {
+      const requestBody = { url };
+      if (selectedFormat) {
+        requestBody.format_id = selectedFormat;
+      }
+
       const response = await fetch(`${backendUrl}/api/download`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
