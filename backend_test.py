@@ -4,7 +4,7 @@ import sys
 from datetime import datetime
 
 class SocialMediaVideoDownloaderAPITester:
-    def __init__(self, base_url="https://74ccf6c4-3581-4467-be8a-0047827b1a10.preview.emergentagent.com"):
+    def __init__(self, base_url="https://0c0acbec-6be1-4dd8-94c7-182b322313e8.preview.emergentagent.com"):
         self.base_url = base_url
         self.tests_run = 0
         self.tests_passed = 0
@@ -130,7 +130,7 @@ class SocialMediaVideoDownloaderAPITester:
 
 def main():
     # Get the backend URL from command line args or use default
-    backend_url = "https://74ccf6c4-3581-4467-be8a-0047827b1a10.preview.emergentagent.com"
+    backend_url = "https://0c0acbec-6be1-4dd8-94c7-182b322313e8.preview.emergentagent.com"
     
     print(f"🚀 Testing Social Media Video Downloader API at {backend_url}")
     tester = SocialMediaVideoDownloaderAPITester(backend_url)
